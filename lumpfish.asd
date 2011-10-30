@@ -2,4 +2,5 @@
   :depends-on (#:external-program #:osicat)
   :serial t
   :components ((:file "package")
-               (:file "commands")))
+               (:file "commands")
+               (:file "reader")))
