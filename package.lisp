@@ -4,6 +4,7 @@
   (:export #:cd
            #:defexternal
            #:ec
+           #:getenv
            #:ls
            #:pwd
            #:whoami))

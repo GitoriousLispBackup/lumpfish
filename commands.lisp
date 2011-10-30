@@ -1,6 +1,6 @@
 (in-package #:lumpfish-commands)
 
-(defun cd (&optional (dir (environment-variable "HOME")))
+(defun cd (&optional (dir (getenv "HOME")))
   "Change current directory."
   (setf (current-directory) dir)
   (pwd))
@@ -9,6 +9,13 @@
   "Edit a file in emacs."
   (run "emacsclient" (list "-n" path))
   path)
+
+(defun getenv (name)
+  (environment-variable name))
+
+(defun (setf getenv) (value name)
+  (setf (environment-variable name) value)
+  value)
 
 (defun ls (&optional (dir (pwd)))
   "List directory contents."
