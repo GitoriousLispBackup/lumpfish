@@ -2,6 +2,7 @@
   (:nicknames #:lf-commands)
   (:use #:cl #:external-program #:osicat)
   (:export #:cd
+           #:defexternal
            #:ec
            #:ls
            #:pwd))
