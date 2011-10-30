@@ -5,7 +5,8 @@
            #:defexternal
            #:ec
            #:ls
-           #:pwd))
+           #:pwd
+           #:whoami))
 
 (defpackage #:lumpfish-user
   (:nicknames #:lf-user)

@@ -18,6 +18,9 @@
   "Pathname of the current directory."
   (current-directory))
 
+(defun whoami ()
+  (cdr (assoc :name (user-info (nix:getuid)))))
+
 (defmacro defexternal (name &optional program)
   `(defun ,name (&rest args)
      (run-external ,(or program (string-downcase (symbol-name name))) args)))
