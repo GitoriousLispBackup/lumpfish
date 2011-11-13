@@ -58,7 +58,7 @@
         ((= pos (fill-pointer token)) integer)
         ((or *list-head* (eql (char token 0) #\*))
          (get-symbol token))
-        (t token)))))
+        (t (copy-seq token))))))
 
 (defun whitespacep (char)
   (some (lambda (c) (eql char c))
