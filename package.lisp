@@ -1,7 +1,8 @@
 (defpackage #:lumpfish
   (:use #:cl)
   (:export #:*lumpfish-readtable*
-           #:lumpfish-read))
+           #:lumpfish-read
+           #:repl))
 
 (defpackage #:lumpfish-commands
   (:use #:cl #:external-program #:osicat)

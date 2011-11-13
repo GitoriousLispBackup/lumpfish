@@ -3,4 +3,5 @@
   :serial t
   :components ((:file "package")
                (:file "commands")
-               (:file "reader")))
+               (:file "reader")
+               (:file "repl")))
