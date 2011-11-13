@@ -4,15 +4,37 @@
 
 (defvar *list-head* nil)
 
+(defparameter *eof-object* '#:eof)
+
 (defun lumpfish-read (stream)
+  (let ((list (cons
+               (let ((*list-head* t)) (inner-read stream))
+               (let ((*list-head* nil))
+                 (loop
+                    for obj = (inner-read stream nil)
+                    until (eq obj *eof-object*)
+                    collecting obj)))))
+    (fixup list)))
+
+(defun fixup (list)
+  (let ((first (first list)))
+    (if (and (eql (list-length list) 1)
+             (or (and (symbolp first)
+                      (eql (char (symbol-name first) 0) #\*))
+                 (listp first)))
+        first
+        list)))
+
+(defun inner-read (stream &optional (eof-error-p t))
   (loop
-     (let ((x (read-char stream)))
+     (let ((x (read-char stream eof-error-p)))
+       (unless x (return *eof-object*))
        (unless (whitespacep x)
          (let ((macrofun (get-macro-character x *lumpfish-readtable*)))
            (if macrofun
                (let ((result (multiple-value-list
                               (funcall macrofun stream x))))
-                 (when result (return-from lumpfish-read (first result))))
+                 (when result (return-from inner-read (first result))))
                (return (read-token stream x))))))))
 
 (defun read-token (stream first-char)
@@ -56,9 +78,9 @@
     (handler-case
         (progn
           (let ((*list-head* t))
-            (push (lumpfish-read stream) list))
+            (push (inner-read stream) list))
           (let ((*list-head* nil))
-            (loop (push (lumpfish-read stream) list))))
+            (loop (push (inner-read stream) list))))
       (unmatched-close-paren () (nreverse list)))))
 
 (defun right-paren-reader (stream char)
@@ -67,7 +89,7 @@
 
 (defun single-quote-reader (stream char)
   (declare (ignore char))
-  (list 'cl:quote (lumpfish-read stream)))
+  (list 'cl:quote (inner-read stream)))
 
 (defun semicolon-reader (stream char)
   (declare (ignore char))
@@ -97,7 +119,7 @@
 
 (defun dollar-reader (stream char)
   (declare (ignore char))
-  (list 'lumpfish-commands:getenv (lumpfish-read stream)))
+  (list 'lumpfish-commands:getenv (inner-read stream)))
 
 (set-macro-character #\( #'left-paren-reader nil *lumpfish-readtable*)
 (set-macro-character #\) #'right-paren-reader nil *lumpfish-readtable*)
