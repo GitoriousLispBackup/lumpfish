@@ -1,4 +1,4 @@
-(in-package #:lumpfish-reader)
+(in-package #:lumpfish)
 
 (defvar *lumpfish-readtable* (copy-readtable nil))
 
